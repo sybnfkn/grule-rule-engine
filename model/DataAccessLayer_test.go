@@ -15,10 +15,11 @@
 package model
 
 import (
-	"github.com/stretchr/testify/assert"
 	"reflect"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestArrMapLen(t *testing.T) {
@@ -183,7 +184,6 @@ func TestStrIn_Accepts_Empty_Arguments(t *testing.T) {
 	assert.NoError(t, err)
 }
 
-
 func TestStrMatchRegexPattern_Valid_Regex_Pattern(t *testing.T) {
 	regex := "p([a-z]+)ch"
 	str := "peach"
@@ -208,4 +208,60 @@ func TestStrMatchRegexPattern_Not_Match(t *testing.T) {
 	val, err := StrMatchRegexPattern(str, []reflect.Value{reflect.ValueOf(regex)})
 	assert.NoError(t, err)
 	assert.False(t, val.Bool())
+}
+
+func TestMapEqualValues(t *testing.T) {
+	val, err := MapEqualValues(reflect.ValueOf(map[string]string{}), []reflect.Value{})
+	assert.Error(t, err)
+	val, err = MapEqualValues(reflect.ValueOf(map[string]int64{}), []reflect.Value{})
+	assert.Error(t, err)
+	anMap := map[string]string{
+		"1": "a",
+		"2": "b",
+		"3": "c",
+	}
+	assert.Equal(t, 3, len(anMap))
+	val, err = MapEqualValues(reflect.ValueOf(anMap), []reflect.Value{})
+	assert.NoError(t, err)
+	assert.True(t, val.IsValid())
+	assert.Equal(t, false, val.Bool())
+	anMap2 := map[string]string{
+		"1": "a",
+		"2": "a",
+		"3": "a",
+	}
+	val, err = MapEqualValues(reflect.ValueOf(anMap2), []reflect.Value{})
+	assert.NoError(t, err)
+	assert.True(t, val.IsValid())
+	assert.Equal(t, true, val.Bool())
+}
+
+func TestMapCountValue(t *testing.T) {
+	val, err := MapCountValue(reflect.ValueOf(map[string]string{}), []reflect.Value{})
+	assert.Error(t, err)
+	val, err = MapCountValue(reflect.ValueOf(map[string]int64{}), []reflect.Value{})
+	assert.Error(t, err)
+	anMap := map[string]string{
+		"1": "a",
+		"2": "b",
+		"3": "c",
+	}
+	assert.Equal(t, 3, len(anMap))
+	val, err = MapCountValue(reflect.ValueOf(anMap), []reflect.Value{reflect.ValueOf("a")})
+	assert.NoError(t, err)
+	assert.True(t, val.IsValid())
+	assert.Equal(t, 1, int(val.Int()))
+	val, err = MapCountValue(reflect.ValueOf(anMap), []reflect.Value{reflect.ValueOf("aa")})
+	assert.NoError(t, err)
+	assert.True(t, val.IsValid())
+	assert.Equal(t, 0, int(val.Int()))
+	anMap2 := map[string]string{
+		"1": "a",
+		"2": "a",
+		"3": "a",
+	}
+	val, err = MapCountValue(reflect.ValueOf(anMap2), []reflect.Value{reflect.ValueOf("a")})
+	assert.NoError(t, err)
+	assert.True(t, val.IsValid())
+	assert.Equal(t, 3, int(val.Int()))
 }

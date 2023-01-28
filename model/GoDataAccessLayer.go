@@ -16,8 +16,9 @@ package model
 
 import (
 	"fmt"
-	"github.com/hyperjumptech/grule-rule-engine/pkg"
 	"reflect"
+
+	"github.com/hyperjumptech/grule-rule-engine/pkg"
 )
 
 // NewGoValueNode creates new instance of ValueNode backed by golang reflection
@@ -350,7 +351,7 @@ func (node *GoValueNode) CallFunction(funcName string, args ...reflect.Value) (r
 		case "Len":
 			strfunc = StrLen
 		case "MatchString":
-			strfunc = StrMatchRegexPattern	
+			strfunc = StrMatchRegexPattern
 		}
 		if strfunc != nil {
 			val, err := strfunc(node.thisValue.String(), args)
@@ -391,6 +392,10 @@ func (node *GoValueNode) CallFunction(funcName string, args ...reflect.Value) (r
 		switch funcName {
 		case "Len":
 			mapFunc = ArrMapLen
+		case "EqualValues":
+			mapFunc = MapEqualValues
+		case "CountValue":
+			mapFunc = MapCountValue
 		}
 		if mapFunc != nil {
 			val, err := mapFunc(node.thisValue, args)
