@@ -173,11 +173,10 @@ func (e *KnowledgeBase) IsIdentical(that *KnowledgeBase) bool {
 	// fmt.Printf("%s\n%s\n", e.GetSnapshot(), that.GetSnapshot())
 	origin := e.GetSnapshot()
 	clone := that.GetSnapshot()
+	eq := origin == clone
 	//fmt.Printf("print origin_clone:%s\n%s\n", e.GetSnapshot(), that.GetSnapshot())
-	AstLog.Warnf("IsIdentical ORIGIN   : %s", origin)
-	AstLog.Warnf("IsIdentical CLONE    : %s", clone)
-	AstLog.Warnf("IsIdentical compare    : %d", strings.Compare(origin, clone))
-	AstLog.Warnf("IsIdentical equals    : %t", e.GetSnapshot() == that.GetSnapshot())
+	AstLog.Warnf("IsIdentical ORIGIN: %s, CLONE=%s, compare: %d, equals    : %t%t",
+		origin, clone, strings.Compare(origin, clone), e.GetSnapshot() == that.GetSnapshot(), eq)
 	return origin == clone
 }
 
